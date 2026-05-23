@@ -74,7 +74,6 @@
     import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-    // Функція YouTube ID
     function getVideoId(url) {
       const urltypes = ["https://www.youtube.com/shorts/", "https://youtu.be/", "https://www.youtube.com/watch?v="];
       if(url.startsWith(urltypes[0])) return url.substring(urltypes[0].length);
@@ -139,7 +138,6 @@
       overlay.style.opacity = '0';
       setTimeout(() => overlay.style.display = 'none', 500);
 
-      // Цикл рендеру
       renderer.setAnimationLoop(() => {
         cssRenderer.render(cssScene, camera);
         renderer.render(scene, camera);
