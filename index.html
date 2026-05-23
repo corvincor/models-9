@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar/dist/mindar-image-three.prod.js"></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three/build/three.module.js",
+          "GLTFLoader": "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js",
+          "CSS3DObject": "https://unpkg.com/three/examples/jsm/renderers/CSS3DRenderer.js"
+        }
+      }
+    </script>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script type="module" src="./main.js"></script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      button {
+        position: absolute;
+        z-index: 1000;
+        top: 20px;
+        left: 20px;
+        padding: 12px;
+      }
+
+      #youtube {
+        visibility: hidden;
+      }
+
+      iframe {
+        width: 1000px;
+        height: 560px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <button id="start">Запустити AR</button>
+
+    <div id="youtube">
+      <div id="player"></div>
+    </div>
+  </body>
+</html>
