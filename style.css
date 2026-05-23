@@ -1,0 +1,18 @@
+html,
+body {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#ar-div {
+  visibility: hidden;
+}
+
+iframe {
+  width: 1000px;
+  height: 562px;
+  border: none;
+}
