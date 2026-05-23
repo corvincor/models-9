@@ -1,117 +1,116 @@
-<!doctype html>
-<html lang="uk">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AR YouTube & 3D Model</title>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three/build/three.module.js"
+  }
+}
+</script>
+<style>
+html, body {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#ar-div {
+  visibility: hidden;
+}
+iframe {
+  width: 1000px;
+  height: 562px;
+  border: none;
+}
+</style>
+</head>
+<body>
+<div id="ar-div"><div id="player"></div></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
+<script type="module">
+import { CSS3DObject } from "https://unpkg.com/three/examples/jsm/renderers/CSS3DRenderer.js";
+import { GLTFLoader } from "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js";
 
-    <style>
-      html,
-      body {
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
+const THREE = window.MINDAR.IMAGE.THREE;
 
-      #youtube {
-        display: none;
-      }
+function getVideoId(url) {
+  const urltypes = [
+    "https://www.youtube.com/shorts/",
+    "https://youtu.be/",
+    "https://www.youtube.com/watch?v="
+  ];
+  if(url.startsWith(urltypes[0])) return url.substr(urltypes[0].length);
+  if(url.startsWith(urltypes[1])) return url.substr(urltypes[1].length);
+  if(url.startsWith(urltypes[2])) {
+    let s = url.substr(urltypes[2].length);
+    let index = s.indexOf("&");
+    return (index === -1) ? s : s.substr(0, index);
+  }
+  return url;
+}
 
-      iframe {
-        width: 1000px;
-        height: 560px;
-      }
-    </style>
-  </head>
+const createYoutube = (url) => {
+  return new Promise((resolve) => {
+    var tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  <body>
-    <div id="youtube">
-      <div id="player"></div>
-    </div>
-
-    <script type="module">
-      import * as THREE from "https://unpkg.com/three@0.136.0/build/three.module.js";
-
-      import { GLTFLoader } from "https://unpkg.com/three@0.136.0/examples/jsm/loaders/GLTFLoader.js";
-
-      import {
-        CSS3DRenderer,
-        CSS3DObject,
-      } from "https://unpkg.com/three@0.136.0/examples/jsm/renderers/CSS3DRenderer.js";
-
-      let player;
-
-      window.onYouTubeIframeAPIReady = () => {
-        player = new YT.Player("player", {
-          videoId: "ywVRLuN6KWA",
-          playerVars: {
-            playsinline: 1,
-          },
-        });
-      };
-
-      window.addEventListener("DOMContentLoaded", async () => {
-        console.log("MINDAR =", window.MINDAR);
-
-        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-          container: document.body,
-          imageTargetSrc: "./targets.mind",
-          maxTrack: 2,
-        });
-
-        const { renderer, scene, camera } = mindarThree;
-
-        const cssRenderer = new CSS3DRenderer();
-        cssRenderer.setSize(window.innerWidth, window.innerHeight);
-        cssRenderer.domElement.style.position = "absolute";
-        cssRenderer.domElement.style.top = "0";
-
-        document.body.appendChild(cssRenderer.domElement);
-
-        const cssScene = new THREE.Scene();
-
-        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-        scene.add(light);
-
-        const youtube = new CSS3DObject(document.getElementById("youtube"));
-
-        youtube.scale.set(0.0015, 0.0015, 0.0015);
-
-        const videoAnchor = mindarThree.addCSSAnchor(0);
-        videoAnchor.group.add(youtube);
-
-        videoAnchor.onTargetFound = () => {
-          document.getElementById("youtube").style.display = "block";
-
-          if (player) player.playVideo();
-        };
-
-        videoAnchor.onTargetLost = () => {
-          if (player) player.pauseVideo();
-        };
-
-        const loader = new GLTFLoader();
-
-        const gltf = await loader.loadAsync(
-          "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@master/examples/image-tracking/assets/band-example/raccoon/scene.gltf",
-        );
-
-        gltf.scene.scale.set(0.1, 0.1, 0.1);
-        gltf.scene.position.set(0, -0.4, 0);
-
-        const modelAnchor = mindarThree.addAnchor(1);
-        modelAnchor.group.add(gltf.scene);
-
-        await mindarThree.start();
-
-        renderer.setAnimationLoop(() => {
-          renderer.render(scene, camera);
-          cssRenderer.render(cssScene, camera);
-        });
+    window.onYouTubeIframeAPIReady = () => {
+      const player = new YT.Player("player", {
+        videoId: getVideoId(url),
+        events: {
+          onReady: () => resolve(player)
+        }
       });
-    </script>
-  </body>
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const start = async () => {
+    const player = await createYoutube("https://www.youtube.com/watch?v=ywVRLuN6KWA");
+
+    const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+      container: document.body,
+      imageTargetSrc: "targets.mind"
+    });
+
+    const {renderer, cssRenderer, scene, cssScene, camera} = mindarThree;
+
+    const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+    scene.add(light);
+
+    const obj = new CSS3DObject(document.querySelector("#ar-div"));
+    const cssAnchor = mindarThree.addCSSAnchor(0);
+    cssAnchor.group.add(obj);
+
+    cssAnchor.onTargetFound = () => player.playVideo();
+    cssAnchor.onTargetLost = () => player.pauseVideo();
+
+    const gltfLoader = new GLTFLoader();
+    const anchor1 = mindarThree.addAnchor(1);
+    
+    gltfLoader.load("https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Fox/glTF-Binary/Fox.glb", (gltf) => {
+      gltf.scene.scale.set(0.01, 0.01, 0.01);
+      gltf.scene.position.set(0, -0.2, 0);
+      anchor1.group.add(gltf.scene);
+    });
+
+    await mindarThree.start();
+    renderer.setAnimationLoop(() => {
+      renderer.render(scene, camera);
+      cssRenderer.render(cssScene, camera);
+    });
+  }
+  start();
+});
+</script>
+</body>
 </html>
