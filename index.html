@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR YouTube Player</title>
+  <title>Lab: YouTube & 3D Model</title>
   
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
   
@@ -27,6 +27,7 @@
 
   <script type="module">
     import { CSS3DObject } from "https://unpkg.com/three/examples/jsm/renderers/CSS3DRenderer.js";
+    import { GLTFLoader } from "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js";
 
     function getVideoId(url) {
       const urltypes = [
@@ -62,11 +63,11 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      
-      const THREE = window.MINDAR.IMAGE.THREE;
-
+    // Чекаємо завантаження сторінки
+    window.addEventListener("load", () => {
       const start = async () => {
+        const THREE = window.MINDAR.IMAGE.THREE;
+
         const player = await createYoutube("https://www.youtube.com/watch?v=ywVRLuN6KWA");
 
         const mindarThree = new window.MINDAR.IMAGE.MindARThree({
@@ -76,6 +77,9 @@
 
         const {renderer, cssRenderer, scene, cssScene, camera} = mindarThree;
 
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        scene.add(light);
+
         const obj = new CSS3DObject(document.querySelector("#ar-div"));
         const cssAnchor = mindarThree.addCSSAnchor(0);
         cssAnchor.group.add(obj);
@@ -83,12 +87,21 @@
         cssAnchor.onTargetFound = () => player.playVideo();
         cssAnchor.onTargetLost = () => player.pauseVideo();
 
+        const gltfLoader = new GLTFLoader();
+        const anchor1 = mindarThree.addAnchor(1);
+        
+        gltfLoader.load("https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Fox/glTF-Binary/Fox.glb", (gltf) => {
+          gltf.scene.scale.set(0.01, 0.01, 0.01);
+          gltf.scene.position.set(0, -0.2, 0);
+          anchor1.group.add(gltf.scene);
+        });
+
         await mindarThree.start();
         renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
           cssRenderer.render(cssScene, camera);
         });
       }
-      
       start();
     });
   </script>
