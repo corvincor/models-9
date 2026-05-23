@@ -1,116 +1,28 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lab: YouTube & 3D Model</title>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindAR 1.2.5: YouTube & 3D Model</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
 
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-          "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
-        }
-      }
-    </script>
-    <script type="module">
-      import * as THREE from "three";
-      import { MindARThree } from "mindar-face-three";
-    </script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.147.0/build/three.module.js"
+    }
+  }
+  </script>
 
-    <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./style.css">
+  <script src="./main.js" type="module"></script>
+</head>
+<body>
 
-    <script>
-      function getVideoId(url) {
-        const urltypes = [
-          "https://www.youtube.com/shorts/",
-          "https://youtu.be/",
-          "https://www.youtube.com/watch?v=",
-        ];
-        if (url.startsWith(urltypes[0])) return url.substr(urltypes[0].length);
-        if (url.startsWith(urltypes[1])) return url.substr(urltypes[1].length);
-        if (url.startsWith(urltypes[2])) {
-          let s = url.substr(urltypes[2].length);
-          let index = s.indexOf("&");
-          return index === -1 ? s : s.substr(0, index);
-        }
-        return url;
-      }
+  <div id="ar-div">
+    <div id="player"></div>
+  </div>
 
-      const createYoutube = (url) => {
-        return new Promise((resolve) => {
-          var tag = document.createElement("script");
-          tag.src = "https://www.youtube.com/iframe_api";
-          var firstScriptTag = document.getElementsByTagName("script")[0];
-          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-          window.onYouTubeIframeAPIReady = () => {
-            const player = new YT.Player("player", {
-              videoId: getVideoId(url),
-              events: {
-                onReady: () => resolve(player),
-              },
-            });
-          };
-        });
-      };
-
-      window.addEventListener("load", () => {
-        const start = async () => {
-          const THREE = window.THREE;
-
-          const player = await createYoutube(
-            "https://www.youtube.com/watch?v=ywVRLuN6KWAs",
-          );
-
-          const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-            container: document.body,
-            imageTargetSrc: "targets.mind",
-          });
-
-          const { renderer, cssRenderer, scene, cssScene, camera } =
-            mindarThree;
-
-          const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-          scene.add(light);
-
-          const obj = new CSS3DObject(document.querySelector("#ar-div"));
-          const cssAnchor = mindarThree.addCSSAnchor(0);
-          cssAnchor.group.add(obj);
-
-          cssAnchor.onTargetFound = () => player.playVideo();
-          cssAnchor.onTargetLost = () => player.pauseVideo();
-
-          const gltfLoader = new GLTFLoader();
-          const anchor1 = mindarThree.addAnchor(1);
-
-          gltfLoader.load(
-            "https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Fox/glTF-Binary/Fox.glb",
-            (gltf) => {
-              gltf.scene.scale.set(0.01, 0.01, 0.01);
-              gltf.scene.position.set(0, -0.2, 0);
-              anchor1.group.add(gltf.scene);
-            },
-          );
-
-          await mindarThree.start();
-          renderer.setAnimationLoop(() => {
-            renderer.render(scene, camera);
-            cssRenderer.render(cssScene, camera);
-          });
-        };
-
-        start();
-      });
-    </script>
-  </head>
-  <body>
-    <div id="ar-div">
-      <div id="player"></div>
-    </div>
-  </body>
+</body>
 </html>
- 

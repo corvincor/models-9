@@ -1,16 +1,17 @@
-html,
-body {
+html, body {
   position: relative;
   margin: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: #000;
 }
 
 #ar-div {
   visibility: hidden;
 }
 
+/* Налаштування розмірів YouTube-плеєра під формат 16:9 */
 iframe {
   width: 1000px;
   height: 562px;
