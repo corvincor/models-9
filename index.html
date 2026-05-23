@@ -9,6 +9,14 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
 
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.136.0/build/three.module.js"
+        }
+      }
+    </script>
+
     <style>
       html,
       body {
@@ -19,7 +27,7 @@
       }
 
       #youtube {
-        visibility: hidden;
+        display: none;
       }
 
       iframe {
@@ -27,13 +35,13 @@
         height: 560px;
       }
     </style>
+
+    <script type="module" src="./main.js"></script>
   </head>
 
   <body>
     <div id="youtube">
       <div id="player"></div>
     </div>
-
-    <script type="module" src="./main.js"></script>
   </body>
 </html>
