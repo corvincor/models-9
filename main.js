@@ -1,11 +1,11 @@
-import * as THREE from "https://unpkg.com/three@0.136.0/build/three.module.js";
+import * as THREE from "three";
 
-import { GLTFLoader } from "https://unpkg.com/three@0.136.0/examples/jsm/loaders/GLTFLoader.js";
+import { GLTFLoader } from "https://unpkg.com/three@0.136.0/examples/jsm/loaders/GLTFLoader.js?module";
 
 import {
   CSS3DRenderer,
   CSS3DObject,
-} from "https://unpkg.com/three@0.136.0/examples/jsm/renderers/CSS3DRenderer.js";
+} from "https://unpkg.com/three@0.136.0/examples/jsm/renderers/CSS3DRenderer.js?module";
 
 let player;
 
