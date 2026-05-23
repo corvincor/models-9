@@ -3,23 +3,11 @@
   <head>
     <meta charset="UTF-8" />
 
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar/dist/mindar-image-three.prod.js"></script>
-
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three/build/three.module.js",
-          "GLTFLoader": "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js",
-          "CSS3DObject": "https://unpkg.com/three/examples/jsm/renderers/CSS3DRenderer.js"
-        }
-      }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
 
     <script src="https://www.youtube.com/iframe_api"></script>
-
-    <script type="module" src="./main.js"></script>
 
     <style>
       html,
@@ -28,14 +16,6 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-      }
-
-      button {
-        position: absolute;
-        z-index: 1000;
-        top: 20px;
-        left: 20px;
-        padding: 12px;
       }
 
       #youtube {
@@ -50,10 +30,10 @@
   </head>
 
   <body>
-    <button id="start">Запустити AR</button>
-
     <div id="youtube">
       <div id="player"></div>
     </div>
+
+    <script type="module" src="./main.js"></script>
   </body>
 </html>
