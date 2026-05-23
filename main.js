@@ -38,8 +38,6 @@ const createYoutube = (url) => {
 
 window.addEventListener("load", () => {
   const start = async () => {
-    const THREE = window.MINDAR.IMAGE.THREE;
-
     const player = await createYoutube(
       "https://www.youtube.com/watch?v=ZvMHF3zBuis",
     );
